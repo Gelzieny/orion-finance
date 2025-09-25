@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Body, HTTPException, Depends
 
-from src.models.users_model import Usuario
 from src.utils.utils import *
-from src.repository.users_repository import UsuarioRepository
+from src.models.users_model import Usuario
+from src.dependencies.security_hash import *
 from src.dependencies.conexao import ConexaoPostgres
+from src.repository.users_repository import UsuarioRepository
 
 users_controller = APIRouter()
 
@@ -15,7 +16,7 @@ def get_user_repository(db: ConexaoPostgres = Depends(get_db_connection)):
   return UsuarioRepository(db)
 
 
-@users_controller.get(
+@users_controller.post(
     "/list-usuario",
     tags=["Usuário"],
     summary="Listar usuários",
@@ -36,8 +37,9 @@ def get_user_repository(db: ConexaoPostgres = Depends(get_db_connection)):
         ```
     """
 )
-async def list_usuarios(repo: UsuarioRepository = Depends(get_user_repository)):
-  result = repo.get_usuarios()
+async def list_usuarios(data: dict = Body(...), repo: UsuarioRepository = Depends(get_user_repository)):
+  filtros = retira_vazios(data)
+  result = repo.get_usuarios(filtros)
 
   if not result:
     raise HTTPException(status_code=404,  detail= result)
@@ -46,12 +48,12 @@ async def list_usuarios(repo: UsuarioRepository = Depends(get_user_repository)):
 
 
 @users_controller.post("/create-usuario", tags=["Usuário"], summary="Criar novo usuário",)
-async def crete_users(user: Usuario = Body()):
-  repo = UserApi()
+async def crete_users(user: Usuario = Body(), repo: UsuarioRepository = Depends(get_user_repository)):
+  senha = hash_password(user.senha_usuario)
   
   param = {
-    'nome_usuario': user.nome_usuario,
-    'senha_usuario': user.nome_usuario,
+    'user_name': user.nome_usuario,
+    'password': senha,
     'email': user.email
   }
   

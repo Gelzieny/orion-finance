@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.openapi.utils import get_openapi
 from starlette.responses import RedirectResponse
 
 from src.utils.config import settings

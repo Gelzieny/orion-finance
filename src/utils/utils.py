@@ -1,5 +1,7 @@
 import re
 import unicodedata
+from typing import Union
+from datetime import datetime
 
 just_numbers = lambda a: ''.join(re.findall("\d+", a))
 
@@ -12,7 +14,20 @@ def retira_vazios(param):
 
   return ret
 
-import unicodedata
+def formatar_data_ptbr(data: Union[str, datetime]) -> str:
+  """
+  Converte uma data datetime ou string ISO 8601 para o formato pt-BR: dd/mm/yyyy HH:MM:SS
+  """
+  if isinstance(data, datetime):
+    return data.strftime("%d/%m/%Y %H:%M:%S")
+  elif isinstance(data, str):
+    try:
+      data_obj = datetime.fromisoformat(data)
+      return data_obj.strftime("%d/%m/%Y %H:%M:%S")
+    except ValueError:
+      return data
+  else:
+    return str(data)
 
 def fun_remove_acentos(texto: str) -> str:
   """
