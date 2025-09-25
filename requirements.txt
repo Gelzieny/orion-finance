@@ -1,0 +1,11 @@
+psutil
+fastapi
+requests
+gunicorn
+psycopg2
+psycopg2-binary 
+uvicorn[standard]
+SQLAlchemy==2.0.34 
+setuptools
+wheel
+python-dotenv
