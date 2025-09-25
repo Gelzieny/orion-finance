@@ -9,3 +9,9 @@ SQLAlchemy==2.0.34
 setuptools
 wheel
 python-dotenv
+pyjwt
+supabase
+passlib[bcrypt] 
+cryptography 
+certifi
+pydantic-settings

@@ -3,6 +3,8 @@ from fastapi.openapi.utils import get_openapi
 from starlette.responses import RedirectResponse
 
 from src.utils.config import settings
+from src.controller.users_controller import users_controller
+
 
 app = FastAPI(
   title="Orion Finance API",
@@ -17,6 +19,8 @@ app = FastAPI(
   ),
   version= settings.VERSION,
 )
+
+app.include_router(users_controller) 
 
 @app.get("/", include_in_schema=False)
 async def redirect_to_docs():
